@@ -8,48 +8,73 @@ public class FileEncryptionDecryptionTool {
 
         System.out.println("File Encryption/Decryption Tool");
 
-        // Get the input file path
-        System.out.print("Enter the path of the input file: ");
-        String inputFilePath = scanner.nextLine();
+        while (true) {
+            System.out.println("\nOptions:");
+            System.out.println("1. Encrypt");
+            System.out.println("2. Decrypt");
+            System.out.println("3. Exit");
 
-        // Get the output file path
-        System.out.print("Enter the path of the output file: ");
-        String outputFilePath = scanner.nextLine();
+            System.out.print("Choose an option (1, 2, or 3): ");
+            int option = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
 
-        // Get the encryption key
-        System.out.print("Enter the encryption key (an integer): ");
-        int encryptionKey = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
+            if (option == 1) {
+                performEncryption(scanner);
+            } else if (option == 2) {
+                performDecryption(scanner);
+            } else if (option == 3) {
+                System.out.println("Exiting the program. Goodbye!");
+                break;
+            } else {
+                System.out.println("Invalid option. Please choose 1, 2, or 3.");
+            }
+        }
+
+        scanner.close();
+    }
+
+    private static void performEncryption(Scanner scanner) {
+        System.out.println("\nEncryption Selected");
+        String inputFilePath = getFilePath("Enter the path of the input file: ", scanner);
+        String outputFilePath = getFilePath("Enter the path of the output file: ", scanner);
+        int key = getKey("Enter the encryption key (an integer): ", scanner);
 
         try {
-            // Read the content of the input file
             String fileContent = readFile(inputFilePath);
-
-            // Encrypt the content
-            String encryptedContent = encrypt(fileContent, encryptionKey);
-
-            // Write the encrypted content to the output file
+            String encryptedContent = encrypt(fileContent, key);
             writeFile(outputFilePath, encryptedContent);
 
             System.out.println("Encryption successful. Encrypted file saved at: " + outputFilePath);
-
-            // Decryption (Optional)
-            System.out.print("Do you want to decrypt the file? (yes/no): ");
-            String decryptChoice = scanner.nextLine().toLowerCase();
-
-            if (decryptChoice.equals("yes")) {
-                // Read the encrypted content from the output file
-                String encryptedFileContent = readFile(outputFilePath);
-
-                // Decrypt the content
-                String decryptedContent = decrypt(encryptedFileContent, encryptionKey);
-
-                // Display the decrypted content
-                System.out.println("Decrypted Content:\n" + decryptedContent);
-            }
         } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());
         }
+    }
+
+    private static void performDecryption(Scanner scanner) {
+        System.out.println("\nDecryption Selected");
+        String inputFilePath = getFilePath("Enter the path of the input file: ", scanner);
+        String outputFilePath = getFilePath("Enter the path of the output file: ", scanner);
+        int key = getKey("Enter the decryption key (an integer): ", scanner);
+
+        try {
+            String fileContent = readFile(inputFilePath);
+            String decryptedContent = decrypt(fileContent, key);
+            writeFile(outputFilePath, decryptedContent);
+
+            System.out.println("Decryption successful. Decrypted file saved at: " + outputFilePath);
+        } catch (IOException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+    }
+
+    private static String getFilePath(String prompt, Scanner scanner) {
+        System.out.print(prompt);
+        return scanner.nextLine();
+    }
+
+    private static int getKey(String prompt, Scanner scanner) {
+        System.out.print(prompt);
+        return scanner.nextInt();
     }
 
     private static String readFile(String filePath) throws IOException {
@@ -82,7 +107,7 @@ public class FileEncryptionDecryptionTool {
         return encryptedText.toString();
     }
 
-    private static String decrypt(String encryptedText, int key) {
-        return encrypt(encryptedText, 26 - key); // Decryption is the same as encryption with the inverse key
+    private static String decrypt(String text, int key) {
+        return encrypt(text, 26 - key); // Decryption is the same as encryption with the inverse key
     }
 }
