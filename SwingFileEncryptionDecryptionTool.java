@@ -132,6 +132,6 @@ public class SwingFileEncryptionDecryptionTool {
     }
 
     private static String decrypt(String text, int key) {
-        return encrypt(text, 26 - key); // Decryption is the same as encryption with the inverse key
+        return encrypt(text, 26 - key); 
     }
 }
